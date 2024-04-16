@@ -17,6 +17,9 @@ public class Database {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
         try {
+            if(!typeClass.getPackageName().equals("entity")){
+                return null;
+            }
             transaction.begin(); //Start
             Query query = entityManager.createQuery("from " + typeClass.getName());
             @SuppressWarnings("unchecked") List<T> resultList = query.getResultList();
@@ -29,9 +32,7 @@ public class Database {
             entityManager.close();
             entityManagerFactory.close();
         }
-
     }
-
 
     public void add(Object entity) {
         EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("default");
@@ -40,12 +41,9 @@ public class Database {
 
         try {
             transaction.begin();
-
             Object obj = entity;
             System.out.println("The class name being persisted is: "+entity.getClass().getName());
-
             entityManager.persist(obj);
-
             transaction.commit();
         } finally {
             if (transaction.isActive()) {
