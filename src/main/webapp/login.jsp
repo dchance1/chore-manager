@@ -5,7 +5,7 @@
     <title>Log into Chore Manager</title>
 </head>
 <body>
-<h1>Sign on page
+<h1>Chore Manager 123
 </h1>
 <div class="login_form_container">
 <p>Log on to manage your chores
