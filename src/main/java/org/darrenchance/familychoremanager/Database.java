@@ -1,15 +1,12 @@
 package org.darrenchance.familychoremanager;
 
-import entity.Chore;
-import entity.ChoreType;
-
 import javax.persistence.*;
 import java.util.List;
 
 public class Database {
 
     /**
-     * A method to outputs all items or entities using the specified {@code Object} class name.
+     * A method that outputs all items or entities using the specified {@code Object} class name.
      *
      * @param typeClass the class of the entity you would like to list
      * @return List of {@code Object} class name
@@ -50,33 +47,24 @@ public class Database {
         }
     }
 
-    public void joinTest() {
+    /**
+     * Returns chores from a table joined from entities Chore, ChoreType, Room, User.
+     *
+     * @return Returns an {@code Object[]} with Objects at the following indexes;
+     * index; 0 = Chore.java, 1 = ChoreType.java, 2 = User.java, 3 = Room.java at
+     */
+    public List<Object[]> getAllChores() {
         EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("default");
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
         try {
-
             transaction.begin(); //Start
-
-            //String jpql = "SELECT c FROM Chore c LEFT JOIN FETCH c.choreTypesByChoreTypeId";
-
-            //Query query = entityManager.createQuery("from ");
-            //TypedQuery<Chore> q = entityManager.createQuery(jpql, Chore.class);
-
-//            q.getResultList().forEach(o -> System.out.println(((Chore) o[0]).getIsActive() +
-//                    "Chore: " + ((ChoreType) o[1]).getChoreName()));
-            //String jpql = "SELECT c,ct FROM Chore c LEFT JOIN ChoreType ct ON c.choreTypeId = ct.choreTypeId";
-            String jpql = "SELECT c, ct FROM Chore c left join fetch ChoreType ct ON c.choreTypeId = ct.choreTypeId";
+            // Query joining tables and running query returniing Object[]
+            String jpql = "SELECT c, ct, u,r FROM Chore c left join ChoreType ct ON c.choreTypeId = ct.choreTypeId " +
+                    "left join User u ON c.userId = u.id left join Room r ON c.roomId = r.roomId order by r.roomName ASC, u.username ";
             TypedQuery<Object[]> q = entityManager.createQuery(jpql, Object[].class);
-
-            //q.getResultList().forEach(o -> System.out.println(((Chore)  o[0] ).getChoreTypesByChoreTypeId().getChoreTypeDescription()));
-
-            q.getResultList().forEach(o -> System.out.println(((Chore) o[0]).getChoreId()
-                    + " Username: " + ((ChoreType) o[1]).getChoresByChoreTypeId()));
-
-
-            //q.getResultList().forEach(o -> System.out.println( o.getUsersByUserId().getUsername()));
             transaction.commit(); //End
+            return q.getResultList();
         } finally {
             if (transaction.isActive()) {
                 transaction.rollback();
@@ -84,14 +72,12 @@ public class Database {
             entityManager.close();
             entityManagerFactory.close();
         }
-
     }
 
     public void add(Object entity) {
         EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("default");
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
-
         try {
             transaction.begin();
             Object obj = entity;
