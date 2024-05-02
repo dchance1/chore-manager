@@ -13,7 +13,7 @@
 <body>
 <ul>
     <li><a href="index.jsp">Home</a></li>
-    <li><a href="login.jsp">Dashboard</a></li>
+    <li><a href="dashboard-servlet">Dashboard</a></li>
     <li><a href="assign-chores-servlet">Assign Chores</a></li>
     <li><a href="login.jsp">Log Out</a></li>
     <li><a href="contact.asp">Contact</a></li>
