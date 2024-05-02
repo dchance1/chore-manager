@@ -62,6 +62,8 @@ public class Database {
             // Query joining tables and running query returniing Object[]
             String jpql = "SELECT c, ct, u,r FROM Chore c left join ChoreType ct ON c.choreTypeId = ct.choreTypeId " +
                     "left join User u ON c.userId = u.id left join Room r ON c.roomId = r.roomId order by r.roomName ASC, u.username ";
+            // Returning Object array with with Objects at the following indexes;
+            // * index; 0 = Chore.java, 1 = ChoreType.java, 2 = User.java, 3 = Room.java
             TypedQuery<Object[]> q = entityManager.createQuery(jpql, Object[].class);
             transaction.commit(); //End
             return q.getResultList();
@@ -74,16 +76,22 @@ public class Database {
         }
     }
 
+    /**
+     * A method to persist/add/insert an abject to the choresdb as long as it is included in the 'entity' package using
+     * Hibernate framework and JPA
+     *
+     * @param entity an object/model in the entity package that can be persisted to the choredb
+     */
     public void add(Object entity) {
         EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("default");
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
         try {
-            transaction.begin();
+            transaction.begin();// Start
             Object obj = entity;
-            System.out.println("The class name being persisted is: " + entity.getClass().getName());
+            // Adding object to database
             entityManager.persist(obj);
-            transaction.commit();
+            transaction.commit();// End
         } finally {
             if (transaction.isActive()) {
                 transaction.rollback();
@@ -92,5 +100,4 @@ public class Database {
             entityManagerFactory.close();
         }
     }
-
 }
