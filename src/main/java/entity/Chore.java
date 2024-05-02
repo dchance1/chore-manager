@@ -38,9 +38,6 @@ public class Chore {
     @JoinColumn(name = "user_id", referencedColumnName = "id",insertable=false, updatable=false)
     private User usersByUserId;
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id",insertable=false, updatable=false)
-    private User usersByUserId_0;
-    @ManyToOne
     @JoinColumn(name = "chore_type_id", referencedColumnName = "chore_type_id",insertable=false, updatable=false)
     private ChoreType choreTypesByChoreTypeId;
 
@@ -142,14 +139,6 @@ public class Chore {
 
     public void setUsersByUserId(User usersByUserId) {
         this.usersByUserId = usersByUserId;
-    }
-
-    public User getUsersByUserId_0() {
-        return usersByUserId_0;
-    }
-
-    public void setUsersByUserId_0(User usersByUserId_0) {
-        this.usersByUserId_0 = usersByUserId_0;
     }
 
     @Override
