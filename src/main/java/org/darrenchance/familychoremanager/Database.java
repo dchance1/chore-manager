@@ -1,5 +1,8 @@
 package org.darrenchance.familychoremanager;
 
+import entity.ChoreType;
+import entity.Room;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -92,6 +95,55 @@ public class Database {
             // Adding object to database
             entityManager.persist(obj);
             transaction.commit();// End
+        } finally {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            entityManager.close();
+            entityManagerFactory.close();
+        }
+    }
+
+    /**
+     * Deletes entity from choresdb by passing in the associated object entity and then using its primary key, which
+     * could be an 'id' for example. It will return the amount of rows affected. Pass in an arbitrary object containing
+     * the primary key, or pass in the actual object.
+     *
+     * @param entity an object from the choresdb.
+     * @return Returns the rows affected. If no rows affected or delete unsuccessful will return 0
+     */
+    public int remove(Object entity) {
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("default");
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();// Start
+            Object obj = entity;// placeholder for object being passed into method
+            // Delete object based on primary key and entity class.
+            int rowsAffected = 0;// Reflects if item actually get's deleted or not
+            if (obj.getClass().getName().equalsIgnoreCase("entity.Room")) {
+                System.out.println(obj.getClass().getName());
+                Room room = (Room) obj;
+                // Getting primary key.
+                int id = room.getRoomId();
+                // Running query to delete using primary key.
+                rowsAffected = entityManager.createQuery("delete from Room where id = :id")
+                        .setParameter("id", id)
+                        .executeUpdate();
+            }
+            if (obj.getClass().getName().equalsIgnoreCase("entity.ChoreType")) {
+                System.out.println(obj.getClass().getName());
+                ChoreType choreType = (ChoreType) obj;
+                // Getting primary key.
+                int id = choreType.getChoreTypeId();
+                // Running query to delete using primary key.
+                rowsAffected = entityManager.createQuery("delete from ChoreType where id = :id")
+                        .setParameter("id", id)
+                        .executeUpdate();
+            }
+            transaction.commit();// End
+            // Return rowsAffected, will be zero if delete unsuccessful.
+            return rowsAffected;
         } finally {
             if (transaction.isActive()) {
                 transaction.rollback();
