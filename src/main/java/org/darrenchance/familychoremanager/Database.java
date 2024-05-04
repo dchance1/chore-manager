@@ -1,5 +1,6 @@
 package org.darrenchance.familychoremanager;
 
+import entity.Chore;
 import entity.ChoreType;
 import entity.Room;
 
@@ -41,6 +42,32 @@ public class Database {
             @SuppressWarnings("unchecked") List<T> resultList = query.getResultList();
             transaction.commit(); //End
             return resultList;
+        } finally {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            entityManager.close();
+            entityManagerFactory.close();
+        }
+    }
+
+    /**
+     * Get all chore by room id.
+     * @param id the room id
+     * @return a list of chores associated with the room id.
+     */
+    public List<Chore> getChoresByRoomId(int id){
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("default");
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin(); //Start
+            // Query to get all chores that have the specific room id.
+            Query query = entityManager.createQuery("select c from  Chore c where c.roomId = "+ id);
+            // Saving results to a list of chores.
+            List<Chore> choreList = query.getResultList();
+            transaction.commit(); //End
+            return choreList;
         } finally {
             if (transaction.isActive()) {
                 transaction.rollback();
