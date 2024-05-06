@@ -36,6 +36,51 @@ public class Database {
             if (typeClass.getName().equals("entity.User")) {
                 namedQueryStr = "User.orderByName";
             }
+            if (typeClass.getName().equals("entity.Chore")){
+                namedQueryStr = "Chore.default";
+            }
+            transaction.begin(); //Start
+            // Run query
+            Query query = entityManager.createNamedQuery(namedQueryStr);
+            @SuppressWarnings("unchecked") List<T> resultList = query.getResultList();
+            transaction.commit(); //End
+            return resultList;
+        } finally {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            entityManager.close();
+            entityManagerFactory.close();
+        }
+    }
+    public <T> List<T> listAllItems(Class<T> typeClass,int namedQuery) {
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("default");
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        String namedQueryStr = "";
+        //String orderBy = "";
+        try {
+            // Ensures that only entity classes will return anything
+            if (!typeClass.getPackageName().equals("entity")) {
+                return null;
+            }
+            // Default ordering for query results based on entity
+            if (typeClass.getName().equals("entity.ChoreType")) {
+                namedQueryStr = "ChoreType.orderByName";
+            }
+            if (typeClass.getName().equals("entity.Room")) {
+                if (namedQuery == Room.ROOM_BY_ID){
+                    namedQueryStr = "Room.roomById";
+                }else {
+                    namedQueryStr = "Room.orderByName";
+                }
+            }
+            if(typeClass.getName().equals("entity.Chore")){
+                if(namedQuery == Chore.DISTINCT_ROOM){
+                    namedQueryStr = "Chore.distinctRoom";
+                    System.out.println("Working method");
+                }
+            }
             transaction.begin(); //Start
             // Run query
             Query query = entityManager.createNamedQuery(namedQueryStr);
@@ -68,6 +113,33 @@ public class Database {
             List<Chore> choreList = query.getResultList();
             transaction.commit(); //End
             return choreList;
+        } finally {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            entityManager.close();
+            entityManagerFactory.close();
+        }
+    }
+
+    /**
+     * Method queries choresdb database and returns the room with the parameter id
+     *
+     * @param id the room id
+     * @return a {@code Room} associated with the associated id.
+     */
+    public Room getRoomById(int id){
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("default");
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin(); //Start
+            // Query to get a specific room with room id.
+            Query query = entityManager.createQuery("select rm from Room rm where rm.roomId = "+ id);
+            // Saving results to a Room object
+            Room roomList = (Room) query.getResultList().get(0);
+            transaction.commit(); //End
+            return roomList;
         } finally {
             if (transaction.isActive()) {
                 transaction.rollback();
