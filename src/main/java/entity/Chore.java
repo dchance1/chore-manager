@@ -8,7 +8,11 @@ import java.sql.Date;
 @org.hibernate.annotations.Entity(
         dynamicInsert = true
 )
+@NamedQuery(name = "Chore.distinctRoom", query = "SELECT distinct roomId FROM Chore")
+@NamedQuery(name = "Chore.default", query = "select c from Chore c")
 public class Chore {
+    public static final int DISTINCT_ROOM = 0;
+
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "chore_id")
