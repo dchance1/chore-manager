@@ -6,7 +6,9 @@ import java.util.Collection;
 @Entity
 @Table(name = "rooms", schema = "dbo", catalog = "choresdb")
 @NamedQuery(name = "Room.orderByName", query = "SELECT tbl FROM Room tbl ORDER BY tbl.roomName")
+@NamedQuery(name = "Room.roomById", query = "select  rm from  Room  rm WHERE rm.roomId = id")
 public class Room {
+    public static final int ROOM_BY_ID = 0;
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "room_id")
