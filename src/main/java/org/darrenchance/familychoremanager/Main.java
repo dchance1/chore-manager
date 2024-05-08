@@ -1,52 +1,39 @@
 package org.darrenchance.familychoremanager;
 
-import entity.Chore;
-import entity.Reward;
+import entity.*;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
         Database db = new Database();
-        List<Reward> rewardList = db.listAllItems(Reward.class);
-        List<Chore> choreList = db.listAllItems(Chore.class);
-        System.out.println("-".repeat(26));
-
-        System.out.println("Rewards Table");
-        System.out.println("-".repeat(26));
-        for (Reward reward : rewardList) {
-            System.out.printf("{title: " + reward.getTitle() + "},");
-            System.out.printf("{title: " + reward.getItemDescription() + "}");
-            System.out.println(reward);
+        List<Room> rooms = db.listAllItems(Room.class);
+        for (Room rm : rooms) {
+            System.out.println("Room: " + rm.getRoomName() + ", Room ID: " + rm.getRoomId());
         }
-        System.out.println("-".repeat(26));
 
+        List distinctRoomIds = Collections.singletonList(db.listAllItems(Chore.class, Chore.DISTINCT_ROOM)).get(0);
+        ArrayList<Integer> roomIds = (ArrayList<Integer>) distinctRoomIds;
+        for(Integer id: roomIds){
+            // create a query to get all chores for 'i' which is roomId
+            // This will grab every chore for every room
+            System.out.println("--- Room ID: " + id + " ---");
+            List<Chore> ch = db.getChoresByRoomId(id);
+            for(Chore c: ch){
+                System.out.println("Chore id: "+c.getChoreId()+ ", Chore NameID: "+
+                        c.getChoreTypesByChoreTypeId().getChoreName());
+            }
 
-        System.out.println("Chores Table");
-        System.out.println("-".repeat(26));
-        for(Chore chore: choreList){
-            System.out.printf("{title: " + chore.getTitle() + "},");
-            System.out.printf("{chore: " + chore.getDescription() + "}");
-            System.out.println(chore);
         }
-        System.out.println("-".repeat(26));
+        for(Chore ch: db.listAllItems(Chore.class)){
+            System.out.println(ch.getChoreTypesByChoreTypeId());
 
-        Reward reward = new Reward();
-        reward.setTitle("1 hr extra screen time");
-        reward.setItemDescription("You get 1 hour of extra screen time to use for the day.");
+        }
+        Room newRoom = db.getRoomById(1);
 
-        db.add(reward);
+        System.out.println(newRoom.getRoomName());
 
-        db.add(new Chore());
     }
-
-
-
-
-
-
 }

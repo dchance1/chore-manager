@@ -5,20 +5,20 @@
     <title>Log into Chore Manager</title>
 </head>
 <body>
-<h1>Chore Manager 123
+<h1>Chore Manager
 </h1>
 <div class="login_form_container">
-<p>Log on to manage your chores
-</p>
+    <p>Log on to manage your chores
+    </p>
 </div>
 
 <form id="login_form" method="post" action="index.jsp">
     <div class="email_container">
-        <input type="text" placeholder="Email or phone number"/>
+        <input type="text" placeholder="USERNAME" name="userName"/>
     </div>
     <br>
     <div>
-        <input type="password" placeholder="Password">
+        <input type="password" placeholder="PASSWORD">
     </div>
     <br>
     <div>
@@ -26,7 +26,6 @@
             Log In
         </button>
     </div>
-
 
 </form>
 <br/>
