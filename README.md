@@ -4,7 +4,6 @@ This application will have a rewards based chore system where each chore complet
 
 This application will have the minimum features included in version 1.0
 - User Management System
--   Create user
--   
+- Create user
 - Adding, Editing, deleting chores
 - Adding 
